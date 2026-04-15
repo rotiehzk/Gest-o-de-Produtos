@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<!-- Indica ao browser que este documento usa HTML5 -->
+
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- Elemento raiz da página.
+     O atributo xmlns:th declara o namespace do Thymeleaf,
+     para poderes usar atributos como th:text e th:each -->
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+
+
+    <title th:text="${titulo}">Index</title>
+    <!-- Se existir a variável "titulo" enviada pelo controller,
+         Se não existir, aparece "Index". -->
+
+    
+</head>
+
+<body>
+
+    <h1 th:text="${titulo}"></h1>
+    <!-- Mostra o valor da variável "titulo" enviada pelo controller.
+         model.addAttribute("titulo", "Página Principal nº2"); -->
+
+    <p th:text="${cenas}"></p>
+
+
+    
+    <h2>Lista de Equipamentos</h2>
+    <!-- Título fixo da secção -->
+
+    <table>
+        <!-- Tabela onde vão ser mostrados os Utilizadoress -->
+        <thead>
+            <!-- Cabeçalho da tabela -->
+            <tr>
+                <th>Modelo</th>
+                <th>Marca</th>
+                <th>Local</th>
+                <th>Garantia</th>
+                <th>Seguro</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <!-- Corpo da tabela -->
+            <tr th:each="equipamento : ${equipamentos}">
+
+                <td th:text="${equipamento.modelo}"></td>
+                <td th:text="${equipamento.marca}"></td>
+                <td th:text="${equipamento.local}"></td>
+                <td> <input type="checkbox" th:checked="${equipamento.garantia}" disabled /></td> 
+                <td> <input type="checkbox" th:checked="${equipamento.seguro}"   disabled /></td>            </tr>
+        </tbody>
+    </table>
+
+        <h2>Lista de Fornecedores</h2>
+    <table>
+        <!-- Tabela onde vão ser mostrados os Utilizadoress -->
+        <thead>
+            <!-- Cabeçalho da tabela -->
+            <tr>
+                <th>Nome</th>
+                <th>Morada</th>
+                <th>Localidade</th>
+                <th>Email</th>
+                <th>Telemovel</th>
+                <th>Site</th>
+            </tr>
+        </thead>
+
+       
+        <tbody>
+            <!-- Corpo da tabela -->
+            <tr th:each="fornecedor : ${fornecedores}">
+
+                <td th:text="${fornecedor.nome}"></td>
+                <td th:text="${fornecedor.morada}"></td>
+                <td th:text="${fornecedor.localidade}"></td>
+                <td th:text="${fornecedor.email}"></td>
+                <td th:text="${fornecedor.telemovel}"></td>
+                <td th:text="${fornecedor.site}"></td>
+
+            </tr>
+        </tbody>
+    </table>
+
+
+    
+        <h2>Lista de cenas</h2>
+    <table>
+        <!-- Tabela onde vão ser mostrados os Utilizadoress -->
+        <thead>
+            <!-- Cabeçalho da tabela -->
+            <tr>
+                <th>...</th>
+
+            </tr>
+        </thead>
+
+       
+        <tbody>
+            <!-- Corpo da tabela -->
+
+        </tbody>
+    </table>
+
+
+
+    <h2>Lista de Utilizadores</h2>
+    <!-- Título fixo da secção -->
+
+    <table>
+        <!-- Tabela onde vão ser mostrados os Utilizadoress -->
+        <thead>
+            <!-- Cabeçalho da tabela -->
+            <tr>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Palavra Passe</th>
+                <th>Data de Nascimento</th>
+                
+            </tr>
+        </thead>
+
+        <tbody>
+            <!-- Corpo da tabela -->
+            <tr th:each="Utilizador : ${Utilizadores}">
+
+                <td th:text="${Utilizador.name}"></td>
+                <td th:text="${Utilizador.email}"></td>
+                <td th:text="${Utilizador.password}"></td>
+                <td th:text="${Utilizador.dNascimento}"></td>
+            
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code - <span th:text="${phone.nome}">Phone</span></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .print-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .phone-name {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin: 20px 0 10px;
+        }
+        
+        .phone-details {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        .qr-wrapper {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            margin: 20px 0;
+        }
+        
+        .qr-code-label {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #888;
+            word-break: break-all;
+            margin-top: 15px;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .no-print {
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+        
+        .btn-secondary {
+            background: #e2e6ea;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background: #dbe0e5;
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            .no-print {
+                display: none;
+            }
+            .print-container {
+                box-shadow: none;
+                border: 2px solid #333;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="print-container">
+        <div class="logo">📱 Inventário Escolar</div>
+        
+        <div class="phone-name" th:text="${phone.nome}">Iphone</div>
+        
+        <div class="phone-details">
+            <span th:text="${phone.categoria}">iOS</span> | 
+            <span th:text="${phone.fornecedor}">Apple</span>
+        </div>
+        
+        <div class="qr-wrapper" id="qrCodeContainer">
+            <!-- QR Code será gerado aqui -->
+        </div>
+        
+        <div class="qr-code-label" th:text="${phone.codigoUnico}">
+            7604e1e2-1de7-492a-9cba-0f95cdefca1c
+        </div>
+        
+        <div class="footer">
+            Generated on <span th:text="${#temporals.format(#temporals.createNow(), 'dd/MM/yyyy HH:mm')}"></span>
+        </div>
+        
+        <div class="no-print">
+            <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimir</button>
+            <button class="btn btn-secondary" onclick="window.close()">✖️ Fechar</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var codigoUnico = /*[[${phone.codigoUnico}]]*/ '';
+        /*]]>*/
+        
+        new QRCode(document.getElementById("qrCodeContainer"), {
+            text: codigoUnico,
+            width: 200,
+            height: 200,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
+    </script>
+</body>
+</html>

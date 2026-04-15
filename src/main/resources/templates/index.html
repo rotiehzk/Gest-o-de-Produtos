@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<!-- Indica ao browser que este documento usa HTML5 -->
+
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- Elemento raiz da página.
+     O atributo xmlns:th declara o namespace do Thymeleaf,
+     para poderes usar atributos como th:text e th:each -->
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+
+
+    <title th:text="${titulo}">Index</title>
+    <!-- Se existir a variável "titulo" enviada pelo controller,
+         Se não existir, aparece "Index". -->
+
+    
+</head>
+
+<body>
+
+    <h1 th:text="${titulo}"></h1>
+    <!-- Mostra o valor da variável "titulo" enviada pelo controller.
+         model.addAttribute("titulo", "Página Principal nº2"); -->
+
+    <p th:text="${cenas}"></p>
+
+
+    
+    <h2>Lista de Equipamentos</h2>
+    <!-- Título fixo da secção -->
+
+    <table>
+        <!-- Tabela onde vão ser mostrados os Utilizadoress -->
+        <thead>
+            <!-- Cabeçalho da tabela -->
+            <tr>
+                <th>Modelo</th>
+                <th>Marca</th>
+                <th>Local</th>
+                <th>Garantia</th>
+                <th>Seguro</th>
+                <th>Preço</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <!-- Corpo da tabela -->
+            <tr th:each="equipamento : ${equipamentos}">
+
+                <td th:text="${equipamento.modelo}"></td>
+                <td th:text="${equipamento.marca}"></td>
+                <td th:text="${equipamento.local}"></td>
+                <td> <input type="checkbox" th:checked="${equipamento.garantia}" disabled /></td> 
+                <td> <input type="checkbox" th:checked="${equipamento.seguro}"   disabled /></td>
+                
+            </tr>
+        </tbody>
+    </table>
+
+<!------------------------------------------------------------------------->
+
+        <h2>Lista de Fornecedores</h2>
+    <table>
+        <!-- Tabela onde vão ser mostrados os Utilizadoress -->
+        <thead>
+            <!-- Cabeçalho da tabela -->
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Morada</th>
+                <th>Localidade</th>
+                <th>Email</th>
+                <th>Telemovel</th>
+                <th>Site</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <!-- Corpo da tabela -->
+            <tr th:each="fornecedor : ${fornecedores}">
+
+                <td th:text="${fornecedor.nome}"></td>
+                <td th:text="${fornecedor.morada}"></td>
+                <td th:text="${fornecedor.localidade}"></td>
+                <td th:text="${fornecedor.email}"></td>
+                <td th:text="${fornecedor.telemovel}"></td>
+                <td th:text="${fornecedor.site}"></td>
+
+            </tr>
+        </tbody>
+    </table>
+
+<!------------------------------------------------------------------------->
+
+        <h2>Lista de Telefones</h2>
+    <table>
+        <!-- Tabela onde vão ser mostrados os Utilizadoress -->
+        <thead>
+            <!-- Cabeçalho da tabela -->
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Preço</th>
+                <th>Fornecedor</th> 
+                <th>Quantidade Stock</th>   
+                <th>Categoria</th>
+                <th>Em Promoção</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <!-- Corpo da tabela -->
+            <tr th:each="phone : ${phones}">
+
+                <td th:text="${phone.id}"></td>
+                <td th:text="${phone.nome}"></td>
+                <td th:text="${phone.preco}"></td>
+                <td th:text="${phone.fornecedor}"></td>
+                <td th:text="${phone.quantidadeStock}"></td>
+                <td th:text="${phone.categoria}"></td>
+                <td th:text="${phone.emPromocao}"></td>
+
+            </tr>
+        </tbody>
+    </table>
+
+
+<!------------------------------------------------------------------------->
+
+
+
+        <h2>Lista de Produtos</h2>
+    <table>
+        <!-- Tabela onde vão ser mostrados os Utilizadoress -->
+        <thead>
+            <!-- Cabeçalho da tabela -->
+            <tr>
+                <th>Nome</th>
+                <th>Preço</th>
+                <th>Fornecedor</th> 
+                <th>Quantidade Stock</th>   
+                <th>Categoria</th>
+                <th>Em Promoção</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <!-- Corpo da tabela -->
+            <tr th:each="produto : ${produtos}">
+                <td th:text="${produto.id}"></td>
+                <td th:text="${produto.nome}"></td>
+                <td th:text="${produto.preco}"></td>
+                <td th:text="${produto.fornecedor}"></td>
+                <td th:text="${produto.quantidadeStock}"></td>
+                <td th:text="${produto.categoria}"></td>
+                <td th:text="${produto.emPromocao}"></td>
+            </tr>
+        </tbody>
+    </table>
+
+
+    
+</body>
+</html>

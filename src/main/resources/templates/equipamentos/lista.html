@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head(${titulo})"></head>
+<body>
+    <nav th:replace="fragments/navbar :: navbar('equipamentos')"></nav>
+
+    <main class="container py-4" data-page="equipamentos-lista">
+        <section class="app-hero mb-4">
+            <div class="app-hero-copy">
+                <span class="badge text-bg-light mb-3">Frontend Thymeleaf + Bootstrap</span>
+                <h1 class="display-6 mb-2">Gestão de equipamentos</h1>
+                <p class="text-secondary mb-0">
+                    Lista renderizada em HTML, com operações de escrita feitas pela API JSON em
+                    <code>/api/equipamentos</code>.
+                </p>
+            </div>
+            <div class="app-hero-actions">
+                <a class="btn btn-outline-light btn-lg" th:href="@{/equipamentos/scan}">Ler QR</a>
+                <a class="btn btn-primary btn-lg" th:href="@{/equipamentos/novo}">Novo equipamento</a>
+            </div>
+        </section>
+
+        <section class="card shadow-sm border-0 mb-4">
+            <div class="card-body">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-8">
+                        <label class="form-label" for="adminApiKey">Chave de administrador</label>
+                        <input type="password" class="form-control" id="adminApiKey"
+                               placeholder="Necessária para criar, editar e apagar">
+                    </div>
+                    <div class="col-md-4">
+                        <p class="form-text mb-0">
+                            A chave é guardada apenas na sessão do browser e enviada no header
+                            <code>Authorization: Bearer ...</code>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div id="feedback" class="mb-3"></div>
+
+        <section class="card shadow-sm border-0">
+            <div class="card-header bg-white border-0 pt-4 px-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="h4 mb-1">Lista de equipamentos</h2>
+                        <p class="text-secondary mb-0" th:text="${#lists.size(equipamentos)} + ' registos encontrados'">0 registos encontrados</p>
+                    </div>
+                    <div class="d-flex gap-2 align-items-center">
+                        <input id="equipamentoBusca" type="text" class="form-control form-control-sm" placeholder="Pesquisar por nome" aria-label="Pesquisar por nome">
+                        <button id="btnequipamentoBuscar" type="button" class="btn btn-outline-primary btn-sm">Buscar</button>
+                        <button id="btnequipamentoLimpar" type="button" class="btn btn-outline-secondary btn-sm">Limpar</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body px-0 pt-0 d-none d-lg-block">
+                <div class="table-responsive">
+                    <table id="equipamentos-lista" class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4">ID</th>
+                                <th>Nome</th>
+                                <th>Preço</th>
+                                <th>Fornecedor</th>
+                                <th>Quantidade Stock</th>
+                                <th>Categoria</th>
+                                <th>Imagem</th>
+                                <th>Código Único</th>
+                                <th>Em Promoção</th>
+                                <th class="text-end pe-4">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${#lists.isEmpty(equipamentos)}">
+                                <td colspan="10" class="text-center py-5 text-secondary">Ainda não existem equipamentos registados.</td>
+                            </tr>
+                            <tr th:each="equipamento : ${equipamentos}">
+                                <td class="ps-4 fw-semibold" th:text="${equipamento.id}">1</td>
+                                <td th:text="${equipamento.nome}">equipamento X</td>
+                                <td>
+                                    <span th:if="${equipamento.emPromocao}"
+                                          th:utext="'<del>€ ' + ${#numbers.formatDecimal(equipamento.preco,1,2)} + '</del> € ' + ${#numbers.formatDecimal(equipamento.precoPromocional,1,2)}"></span>
+                                    <span th:if="${!equipamento.emPromocao}"
+                                          th:text="'€ ' + ${#numbers.formatDecimal(equipamento.preco,1,2)}"></span>
+                                </td>
+                                <td th:text="${equipamento.fornecedor}">Fornecedor A</td>
+                                <td th:text="${equipamento.quantidadeStock}">50</td>
+                                <td th:text="${equipamento.categoria}">Electrónica</td>
+                                <td>
+                                    <img th:if="${equipamento.imagemPath != null}" class="equipamento-thumb"
+                                         th:src="@{'/uploads/' + ${equipamento.imagemPath}}" alt="Imagem do equipamento"
+                                         style="max-width: 50px; max-height: 50px;">
+                                    <span th:if="${equipamento.imagemPath == null}" class="text-secondary">Sem imagem</span>
+                                </td>
+                                <td th:text="${equipamento.codigoUnico} ?: '-'">ABC123</td>
+                                <td>
+                                    <span class="badge rounded-pill"
+                                          th:classappend="${equipamento.emPromocao} ? ' text-bg-success' : ' text-bg-secondary'"
+                                          th:text="${equipamento.emPromocao} ? (${equipamento.percentagemPromocao} + '%') : 'Não'">Não</span>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a class="btn btn-outline-primary"
+                                           th:href="@{/equipamentos/{id}(id=${equipamento.id})}">Ver</a>
+                                        <a class="btn btn-outline-warning"
+                                           th:href="@{/equipamentos/{id}/editar(id=${equipamento.id})}">Editar</a>
+                                        <button type="button" class="btn btn-outline-danger" 
+                                                onclick="deleteProduct(this)">Apagar</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+   <div th:replace="fragments/scripts :: scripts(${pageScript})"></div>
+
+</body>
+</html>

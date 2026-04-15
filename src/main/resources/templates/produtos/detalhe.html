@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head(${titulo})"></head>
+<body>
+    <nav th:replace="fragments/navbar :: navbar('produtos')"></nav>
+
+    <main class="container py-4" data-page="produtos-detalhe">
+        <section class="app-hero mb-4">
+            <div class="app-hero-copy">
+                <span class="badge text-bg-light mb-3">Ficha + QR</span>
+                <h1 class="display-6 mb-2" th:text="${produto.nome}">Produto</h1>
+                <p class="text-secondary mb-0">
+                    O QR code guarda apenas o código único. Num telemóvel, abre
+                    <code>/produtos/scan</code> e aponta a câmara ao código impresso.
+                </p>
+            </div>
+            <div class="app-hero-actions">
+                <button type="button" class="btn btn-outline-light btn-lg" onclick="window.print()">Imprimir QR</button>
+                <a class="btn btn-outline-light btn-lg" th:href="@{/produtos/scan}">Ler QR</a>
+                <a class="btn btn-primary btn-lg" th:href="@{/produtos/{id}/editar(id=${produto.id})}">Editar</a>
+            </div>
+        </section>
+
+        <div class="row g-4">
+            <div class="col-lg-7">
+                <section class="card shadow-sm border-0 h-100">
+                    <div class="card-body p-4">
+                        <h2 class="h4 mb-4">Dados do produto</h2>
+                        <dl class="row mb-0">
+                            <dt class="col-sm-4">ID</dt>
+                            <dd class="col-sm-8" th:text="${produto.id}">1</dd>
+                            <dt class="col-sm-4">Código único</dt>
+                            <dd class="col-sm-8"><span class="qr-code-label" th:text="${produto.codigoUnico}">uuid</span></dd>
+                            <dt class="col-sm-4">Nome</dt>
+                            <dd class="col-sm-8" th:text="${produto.nome}">Produto X</dd>
+                            <dt class="col-sm-4">Preço</dt>
+                            <dd class="col-sm-8">
+                                <span th:if="${produto.emPromocao}">
+                                    <span class="text-decoration-line-through text-muted" th:text="'€ ' + ${#numbers.formatDecimal(produto.preco, 2, 'COMMA', 'POINT')}"></span>
+                                    <strong class="ms-2 text-success" th:text="'€ ' + ${#numbers.formatDecimal(produto.precoPromocional, 2, 'COMMA', 'POINT')}"></strong>
+                                </span>
+                                <span th:unless="${produto.emPromocao}" th:text="'€ ' + ${#numbers.formatDecimal(produto.preco, 2, 'COMMA', 'POINT')}"></span>
+                            </dd>
+                            <dt class="col-sm-4">Fornecedor</dt>
+                            <dd class="col-sm-8" th:text="${produto.fornecedor}">Fornecedor A</dd>
+                            <dt class="col-sm-4">Quantidade Stock</dt>
+                            <dd class="col-sm-8" th:text="${produto.quantidadeStock}">50</dd>
+                            <dt class="col-sm-4">Categoria</dt>
+                            <dd class="col-sm-8" th:text="${produto.categoria}">Electrónica</dd>
+                            <dt class="col-sm-4">Em Promoção</dt>
+                            <dd class="col-sm-8" th:text="${produto.emPromocao} ? 'Sim (' + ${produto.percentagemPromocao} + '%)' : 'Não'">Não</dd>
+                            
+                        </dl>
+                    </div>
+                </section>
+            </div>
+            <div class="col-lg-5">
+                <section class="card shadow-sm border-0 mb-4">
+                    <div class="card-body p-4">
+                        <h2 class="h4 mb-3">QR Code</h2>
+                        <div class="qr-wrapper"
+                             id="qrCodeContainer"
+                             th:attr="data-qr-code=${produto.codigoUnico}">
+                        </div>
+                        <p class="text-secondary small mt-3 mb-0">
+                            O QR guarda apenas o código único do produto, para poder ser impresso e lido em qualquer ambiente.
+                        </p>
+                    </div>
+                </section>
+
+                <section class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <h2 class="h4 mb-3">Imagem</h2>
+                        <img th:if="${produto.imagemPath != null}" class="produto-detail-image"
+                             th:src="@{'/uploads/' + ${produto.imagemPath}}" alt="Imagem do produto">
+                        <p th:if="${produto.imagemPath == null}" class="text-secondary mb-0">
+                            Este produto ainda não tem imagem associada.
+                        </p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <div th:replace="fragments/scripts :: scripts(${pageScript})"></div>
+</body>
+</html>

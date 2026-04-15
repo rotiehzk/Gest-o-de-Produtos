@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head(${titulo})"></head>
+<body>
+    <nav th:replace="fragments/navbar :: navbar('produtos')"></nav>
+
+    <main class="container py-4" data-page="produtos-form">
+        <div class="row justify-content-center">
+            <div class="col-xl-9">
+                <section class="app-hero mb-4">
+                    <div class="app-hero-copy">
+                        <span class="badge text-bg-light mb-3" th:text="${modo == 'editar'} ? 'Edição' : 'Novo registo'">Novo registo</span>
+                        <h1 class="display-6 mb-2" th:text="${titulo}">Novo Produto</h1>
+                        <p class="text-secondary mb-0">
+                            A imagem fica guardada no servidor em disco e o produto recebe um
+                            <code>codigoUnico</code> para uso em QR code.
+                        </p>
+                    </div>
+                    <div class="app-hero-actions">
+                        <a class="btn btn-outline-light btn-lg" th:href="@{/produtos}">Voltar à lista</a>
+                    </div>
+                </section>
+
+                <div id="feedback" class="mb-3"></div>
+
+                <section class="card shadow-sm border-0">
+                    <div class="card-body p-4 p-lg-5">
+                        <form id="produtoForm"
+                              th:object="${produtoForm}"
+                              th:action="${modo == 'editar'} ? @{/produtos/{id}(id=${produto.id})} : @{/produtos}"
+                              method="post"
+                              enctype="multipart/form-data">
+                            <input type="hidden" id="maxImagemBytes" value="1048576">
+                            <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger mb-4">
+                                <p class="mb-0" th:each="erro : ${#fields.globalErrors()}" th:text="${erro}">Erro</p>
+                            </div>
+                            <div class="row g-4 g-lg-4">
+                                <div class="col-md-6">
+                                    <label class="form-label" for="nome">Nome</label>
+                                    <input type="text" class="form-control" id="nome" th:field="*{nome}" maxlength="25" required>
+                                    <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="preco">Preço</label>
+                                    <input type="number" class="form-control" id="preco" th:field="*{preco}" 
+                                           step="0.01" min="0" placeholder="Ex: 10.50" required>
+                                    <small class="form-text text-muted">Insira um valor numérico decimal</small>
+                                    <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('preco')}" th:errors="*{preco}"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="fornecedor">Fornecedor</label>
+                                    <input type="text" class="form-control" id="fornecedor" th:field="*{fornecedor}" maxlength="125" required>
+                                    <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('fornecedor')}" th:errors="*{fornecedor}"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="quantidadeStock">Quantidade Stock</label>
+                                    <input type="number" class="form-control" id="quantidadeStock" th:field="*{quantidadeStock}" 
+                                           min="0" placeholder="Ex: 100" required>
+                                    <small class="form-text text-muted">Insira um valor numérico inteiro</small>
+                                    <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('quantidadeStock')}" th:errors="*{quantidadeStock}"></div>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label" for="categoria">Categoria</label>
+                                    <select class="form-control" id="categoria" th:field="*{categoria}" required>
+                                        <option value="">Selecione uma categoria...</option>
+                                        <option value="Mercearia">Mercearia</option>
+                                        <option value="Congelados">Congelados</option>
+                                        <option value="Bebidas">Bebidas</option>
+                                        <option value="Higiene">Higiene</option>
+                                    </select>
+                                    <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('categoria')}" th:errors="*{categoria}"></div>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label" for="imagem">Imagem do produto</label>
+                                    <input type="file" class="form-control" id="imagem" th:field="*{imagem}"
+                                           accept="image/*" capture="environment">
+                                    <div class="form-text">
+                                        Podes tirar uma foto ou escolher um ficheiro de imagem.
+                                    </div>
+                                    <img id="novaImagemPreview" class="produto-preview d-none mt-3" alt="Preview da nova imagem">
+                                </div>
+                                <div class="col-md-6" th:if="${produto != null and produto.imagemPath != null}">
+                                    <label class="form-label d-block">Imagem atual</label>
+                                    <img class="produto-preview" th:src="@{'/uploads/' + ${produto.imagemPath}}" alt="Imagem atual do produto">
+                                </div>
+                                <div class="col-md-6" th:if="${produto != null}">
+                                    <label class="form-label d-block">Código único</label>
+                                    <div class="qr-code-label" th:text="${produto.codigoUnico}">uuid</div>
+                                </div>
+                                <div class="col-md-12 form-section-divider">
+                                    <label class="form-label" for="adminApiKey">Chave de administrador</label>
+                                    <input type="password" class="form-control" id="adminApiKey" th:field="*{adminApiKey}"
+                                           placeholder="Obrigatória para criar ou atualizar">
+                                    <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('adminApiKey')}" th:errors="*{adminApiKey}"></div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="emPromocao" th:field="*{emPromocao}">
+                                        <label class="form-check-label" for="promocaoSwitch">Em Promoção</label>
+                                        <input type="number" class="form-control" id="percentagemPromocao" th:field="*{percentagemPromocao}" placeholder="Percentagem de desconto (%)" min="0" max="100">
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions mt-5">
+                                <button type="submit" class="btn btn-primary px-4" th:text="${modo == 'editar'} ? 'Atualizar' : 'Guardar'">Guardar</button>
+                                <a class="btn btn-outline-secondary px-4" th:href="@{/produtos}">Cancelar</a>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <div th:replace="fragments/scripts :: scripts(${pageScript})"></div>
+</body>
+</html>

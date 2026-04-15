@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<!-- Indica ao browser que este documento usa HTML5 -->
+
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- Elemento raiz da página.
+     O atributo xmlns:th declara o namespace do Thymeleaf,
+     para poderes usar atributos como th:text e th:each -->
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+
+
+    <title th:text="${titulo}">Index</title>
+    <!-- Se existir a variável "titulo" enviada pelo controller,
+         Se não existir, aparece "Index". -->
+
+    
+</head>
+
+<body>
+
+    <h1 th:text="${titulo}"></h1>
+    <!-- Mostra o valor da variável "titulo" enviada pelo controller.
+         model.addAttribute("titulo", "Página Principal nº2"); -->
+
+
+
+
+
+    <h2>Lista de equipamentos</h2>
+    <table>
+        <!-- Tabela onde vão ser mostrados os equipamentos -->
+        <thead>
+            <!-- Cabeçalho da tabela -->
+            <tr>
+                <th>Modelo</th>
+                <th>Marca</th>
+                <th>Local</th>
+                <th>Garantia</th>
+                <th>Seguro</th>
+            
+            </tr>
+        </thead>
+
+       
+        <tbody>
+            <!-- Corpo da tabela -->
+            <tr th:each="equipamento : ${equipamentos}">
+
+                <td th:text="${equipamento.id}"></td>
+
+                <td th:text="${equipamento.modelo}"></td>
+                <td th:text="${equipamento.marca}"></td>
+                <td th:text="${equipamento.local}"></td>
+                <td> <input type="checkbox" th:checked="${equipamento.garantia}" disabled /></td>
+                <td> <input type="checkbox" th:checked="${equipamento.seguro}"   disabled /></td>
+                
+            </tr>
+        </tbody>
+    </table>
+
+
+
+
+</body>
+</html>

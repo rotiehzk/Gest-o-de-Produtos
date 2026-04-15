@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head(${titulo})"></head>
+<body>
+    <nav th:replace="fragments/navbar :: navbar('phones')"></nav>
+
+    <main class="container py-4" data-page="phones-detalhe">
+        <section class="app-hero mb-4">
+            <div class="app-hero-copy">
+                <span class="badge text-bg-light mb-3">Ficha + QR</span>
+                <h1 class="display-6 mb-2" th:text="${phone.nome}">phone</h1>
+                <p class="text-secondary mb-0">
+                    O QR code guarda apenas o código único. Num telemóvel, abre
+                    <code>/phones/scan</code> e aponta a câmara ao código impresso.
+                </p>
+            </div>
+            <div class="app-hero-actions">
+                <a class="btn btn-outline-light btn-lg" th:href="@{/phones/{id}/imprimir(id=${phone.id})}" target="_blank">Imprimir QR</a>
+                <a class="btn btn-outline-light btn-lg" th:href="@{/phones/scan}">Ler QR</a>
+                <a class="btn btn-primary btn-lg" th:href="@{/phones/{id}/editar(id=${phone.id})}">Editar</a>
+                
+            </div>
+        </section>
+
+        <div class="row g-4">
+            <div class="col-lg-7">
+                <section class="card shadow-sm border-0 h-100">
+                    <div class="card-body p-4">
+                        <h2 class="h4 mb-4">Dados do phone</h2>
+                        <dl class="row mb-0">
+                            <dt class="col-sm-4">ID</dt>
+                            <dd class="col-sm-8" th:text="${phone.id}">1</dd>
+                            <dt class="col-sm-4">Código único</dt>
+                            <dd class="col-sm-8"><span class="qr-code-label" th:text="${phone.codigoUnico}">uuid</span></dd>
+                            <dt class="col-sm-4">Nome</dt>
+                            <dd class="col-sm-8" th:text="${phone.nome}">phone X</dd>
+                            <dt class="col-sm-4">Preço</dt>
+                            <dd class="col-sm-8" th:text="${phone.preco} != null ? '€ ' + ${#numbers.formatDecimal(phone.preco, 1, 2)} : 'Não definido'">€ 100</dd>
+                            <dt class="col-sm-4">Fornecedor</dt>
+                            <dd class="col-sm-8" th:text="${phone.fornecedor}">Fornecedor A</dd>
+                            <dt class="col-sm-4">Quantidade Stock</dt>
+                            <dd class="col-sm-8" th:text="${phone.quantidadeStock}">50</dd>
+                            <dt class="col-sm-4">Categoria</dt>
+                            <dd class="col-sm-8" th:text="${phone.categoria}">Electrónica</dd>
+                            <dt class="col-sm-4">Em Promoção</dt>
+                            <dd class="col-sm-8" th:text="${phone.emPromocao} ? 'Sim' : 'Não'">Não</dd>
+                            
+                        </dl>
+                    </div>
+                </section>
+            </div>
+            <div class="col-lg-5">
+                <section class="card shadow-sm border-0 mb-4">
+                    <div class="card-body p-4">
+                        <h2 class="h4 mb-3">QR Code</h2>
+                        <div class="qr-wrapper"
+                             id="qrCodeContainer"
+                             th:attr="data-qr-code=${phone.codigoUnico}">
+                        </div>
+                        <p id="qr-debug"></p>
+                        <p class="text-secondary small mt-3 mb-0">
+                            O QR guarda apenas o código único do phone, para poder ser impresso e lido em qualquer ambiente.
+                        </p>
+                    </div>
+                </section>
+
+                <section class="card shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <h2 class="h4 mb-3">Imagem</h2>
+                        <img th:if="${phone.imagemPath != null}" class="phone-detail-image"
+                             th:src="@{'/uploads/' + ${phone.imagemPath}}" alt="Imagem do phone">
+                        <p th:if="${phone.imagemPath == null}" class="text-secondary mb-0">
+                            Este phone ainda não tem imagem associada.
+                        </p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <script th:src="@{/js/qrcode.min.js}"></script>
+    <script th:src="@{/js/phones.js}"></script>
+</body>
+</html>

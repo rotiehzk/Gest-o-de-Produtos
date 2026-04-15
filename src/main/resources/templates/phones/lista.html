@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head(${titulo})"></head>
+<body>
+    <nav th:replace="fragments/navbar :: navbar('phones')"></nav>
+
+    <main class="container py-4" data-page="phones-lista">
+        <section class="app-hero mb-4">
+            <div class="app-hero-copy">
+                <span class="badge text-bg-light mb-3">Frontend Thymeleaf + Bootstrap</span>
+                <h1 class="display-6 mb-2">Gestão de phones</h1>
+                <p class="text-secondary mb-0">
+                    Lista renderizada em HTML, com operações de escrita feitas pela API JSON em
+                    <code>/api/phones</code>.
+                </p>
+            </div>
+            <div class="app-hero-actions">
+                <a class="btn btn-outline-light btn-lg" th:href="@{/phones/scan}">Ler QR</a>
+                <a class="btn btn-primary btn-lg" th:href="@{/phones/novo}">Novo phone</a>
+            </div>
+        </section>
+
+        <section class="card shadow-sm border-0 mb-4">
+            <div class="card-body">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-8">
+                        <label class="form-label" for="adminApiKey">Chave de administrador</label>
+                        <input type="password" class="form-control" id="adminApiKey"
+                               placeholder="Necessária para criar, editar e apagar">
+                    </div>
+                    <div class="col-md-4">
+                        <p class="form-text mb-0">
+                            A chave é guardada apenas na sessão do browser e enviada no header
+                            <code>Authorization: Bearer ...</code>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div id="feedback" class="mb-3"></div>
+
+        <section class="card shadow-sm border-0">
+            <div class="card-header bg-white border-0 pt-4 px-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="h4 mb-1">Lista de phones</h2>
+                        <p class="text-secondary mb-0">phones registados</p>
+                    </div>
+                    <div class="d-flex gap-2 align-items-center">
+                        <input id="phoneBusca" type="text" class="form-control form-control-sm" placeholder="Pesquisar por nome" aria-label="Pesquisar por nome">
+                        <button id="btnphoneBuscar" type="button" class="btn btn-outline-primary btn-sm">Buscar</button>
+                        <button id="btnphoneLimpar" type="button" class="btn btn-outline-secondary btn-sm">Limpar</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body px-0 pt-0 d-none d-lg-block">
+                <div class="table-responsive">
+                    <table id="phones-lista" class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4">ID</th>
+                                <th>Nome</th>
+                                <th>Preço</th>
+                                <th>Fornecedor</th>
+                                <th>Quantidade Stock</th>
+                                <th>Categoria</th>
+                                <th>Imagem</th>
+                                <th>Código Único</th>
+                                <th>Em Promoção</th>
+                                <th class="text-end pe-4">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${phones.empty}">
+                                <td colspan="10" class="text-center py-5 text-secondary">Ainda não existem phones registados.</td>
+                            </tr>
+                            <tr th:each="phone : ${phones}">
+                                <td class="ps-4 fw-semibold" th:text="${phone.id}">1</td>
+                                <td th:text="${phone.nome}">phone X</td>
+                                <td th:text="${phone.preco}">100</td>
+                                <td th:text="${phone.fornecedor}">Fornecedor A</td>
+                                <td th:text="${phone.quantidadeStock}">50</td>
+                                <td th:text="${phone.categoria}">Electrónica</td>
+                                <td>
+                                    <span th:if="${phone.imagemPath == null}" class="text-secondary">Sem imagem</span>
+                                </td>
+                                <td th:text="${phone.codigoUnico}">ABC123</td>
+                                <td th:text="${phone.emPromocao} ? 'Sim' : 'Não'">Não</td>
+                                <td class="text-end pe-4">
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a class="btn btn-outline-primary"
+                                           th:href="@{/phones/{id}(id=${phone.id})}">Ver</a>
+                                        <a class="btn btn-outline-warning"
+                                           th:href="@{/phones/{id}/editar(id=${phone.id})}">Editar</a>
+                                        <button type="button" class="btn btn-outline-danger" 
+                                                onclick="deleteProduct(this)">Apagar</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+   <div th:replace="fragments/scripts :: scripts(${pageScript})"></div>
+
+</body>
+</html>
